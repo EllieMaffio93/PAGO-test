@@ -1,0 +1,30 @@
+name: Staging Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop]
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      
+      - name: Deploy
+        uses: ./.github/actions/deploy
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APP_ENV: staging
+          CAPROVER_SERVER: ${{ secrets.STAGING_CAPROVER_SERVER }}
+          APP_NAME: ${{ secrets.STAGING_APP_NAME }}
+          APP_TOKEN: ${{ secrets.STAGING_APP_TOKEN }}
+          DOCKER_BUILD_CONTEXT: .
+          DOCKERFILE_PATH: ./Dockerfile      
+          
